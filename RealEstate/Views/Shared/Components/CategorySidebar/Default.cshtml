@@ -1,0 +1,31 @@
+@* =====================================================================
+   [Câu 4 - Phần 3] View mặc định của CategorySidebarViewComponent
+   Đường dẫn quy chuẩn: Views/Shared/Components/CategorySidebar/Default.cshtml
+   Mục đích: Hiển thị danh mục + số lượng BĐS (dữ liệu do ViewComponent truyền sang).
+   ===================================================================== *@
+@model IEnumerable<RealEstate.Models.ViewModels.CategorySidebarItemViewModel>
+
+<div class="card shadow-sm">
+    <div class="card-header fw-semibold">Danh mục bất động sản</div>
+    <div class="list-group list-group-flush">
+        <a asp-area="" asp-controller="Properties" asp-action="Index"
+           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+            Tất cả
+            <span class="badge bg-dark rounded-pill">@Model.Sum(x => x.PropertyCount)</span>
+        </a>
+
+        @foreach (var item in Model)
+        {
+            <a asp-area="" asp-controller="Properties" asp-action="Index" asp-route-categoryId="@item.Category.Id"
+               class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                @item.Category.Name
+                <span class="badge bg-primary rounded-pill">@item.PropertyCount</span>
+            </a>
+        }
+
+        @if (!Model.Any())
+        {
+            <div class="list-group-item text-muted">Chưa có danh mục.</div>
+        }
+    </div>
+</div>

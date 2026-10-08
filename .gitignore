@@ -1,0 +1,8 @@
+bin/
+obj/
+.vs/
+.vscode/
+.idea/
+*.user
+RealEstate/wwwroot/uploads/properties/*
+!RealEstate/wwwroot/uploads/properties/.gitkeep

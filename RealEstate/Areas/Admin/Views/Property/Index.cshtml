@@ -1,0 +1,71 @@
+@* =====================================================================
+   [Câu 3 - Phần 2] View danh sách BĐS (Admin)
+   Mục đích: Hiển thị dữ liệu Controller truyền sang dưới dạng bảng Bootstrap,
+             có ảnh thumbnail và TÊN danh mục (Category.Name) thay vì CategoryId.
+   View chỉ nhận Model, KHÔNG truy cập DbContext.
+   ===================================================================== *@
+@model IEnumerable<Property>
+
+@{
+    ViewData["Title"] = "Quản lý bất động sản";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">@ViewData["Title"]</h2>
+    <a asp-area="Admin" asp-controller="Property" asp-action="Create" class="btn btn-primary">+ Thêm bất động sản</a>
+</div>
+
+@* Thông báo thành công sau khi tạo mới (đặt ở TempData trong action Create POST) *@
+@if (TempData["SuccessMessage"] is string successMessage)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @successMessage
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">Chưa có bất động sản nào. Hãy thêm mới!</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped table-hover table-bordered align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Hình ảnh</th>
+                    <th>@Html.DisplayNameFor(m => m.Title)</th>
+                    <th>@Html.DisplayNameFor(m => m.Category)</th>
+                    <th class="text-end">@Html.DisplayNameFor(m => m.Price)</th>
+                    <th>@Html.DisplayNameFor(m => m.Description)</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Id</td>
+                        <td>
+                            @* [Câu 3 - Phần 2] Ảnh thumbnail thu nhỏ *@
+                            @if (!string.IsNullOrEmpty(item.ImageUrl))
+                            {
+                                <img src="@item.ImageUrl" alt="@item.Title" class="img-thumbnail property-thumb" />
+                            }
+                            else
+                            {
+                                <span class="text-muted">Không có ảnh</span>
+                            }
+                        </td>
+                        <td>@item.Title</td>
+                        @* [Câu 3 - Phần 2] Hiển thị tên Category nhờ Eager Loading (.Include) trong Repository *@
+                        <td><span class="badge bg-secondary">@item.Category?.Name</span></td>
+                        <td class="text-end">@item.Price.ToString("N0") ₫</td>
+                        <td class="text-truncate" style="max-width: 250px;">@item.Description</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
